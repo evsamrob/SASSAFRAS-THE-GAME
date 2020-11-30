@@ -280,6 +280,7 @@ void game() {
         player.level++;
         initPlayer();
         initRecordPlayer();
+        initCheat();
     }
 
     if (player.level == 1 && player.lives == 0) {       // player has lost

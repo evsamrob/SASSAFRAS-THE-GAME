@@ -18,6 +18,7 @@
 PLAYER player;
 RECORDPLAYER recordPlayer;
 LIVESDISP  livesDisp;
+CHEAT cheat[10];
 int numSprites = 256;
 
 const unsigned short *curColMap;
@@ -30,6 +31,7 @@ void initGame() {
     initPlayer();
     initRecordPlayer();
     initLivesDisplay();
+    initCheat();
 }
 
 // Updates Game
@@ -37,12 +39,14 @@ void updateGame() {
     updatePlayer();
     updateRecordPlayer();
     updateLivesDisplay();
+    updateCheat();
 
     if (player.lives <= 0) {
         if (player.level > 1) {    // player has gone to previous level
             player.level--;
             initPlayer();
             initRecordPlayer();
+            initCheat();
         }
     }
 }
@@ -83,6 +87,7 @@ void initPlayer() {
     player.playerControls = 1;
 
     player.isCheating = 0;
+    player.isCheating2 = 0;
     player.lives = 10;
 
     switch (player.level) {
@@ -339,16 +344,19 @@ void updatePlayer() {
                 // adjusting player and record player locations
                 initPlayer();
                 initRecordPlayer();
+                initCheat();
             }
         } else {
             recordPlayer.showInteraction = 0;
         }
     }
 
-    if (BUTTON_PRESSED(BUTTON_B) && player.level > 1) {
-        player.level--;
-        initPlayer();
-        initRecordPlayer();
+    if (BUTTON_PRESSED(BUTTON_R)) {
+        if (player.isCheating2) {
+            player.isCheating2 = 0;
+        } else {
+            player.isCheating2 = 1;
+        }
     }
 
     if (BUTTON_PRESSED(BUTTON_SELECT)) {
@@ -460,5 +468,116 @@ void updateLivesDisplay() {
                                                 ATTR2_PALROW(2 + player.level);
     } else {
         shadowOAM[livesDisp.OAMIndex].attr0 = ATTR0_HIDE;
+    }
+}
+
+void initCheat() {
+    for (int i = 0; i > 10; i++) {
+        cheat[i].OAMIndex = i + 4;
+        cheat[i].active = 0;
+    }
+
+    switch (player.level) {
+        case 0:
+            break;
+        case 1: 
+            // 1st jump
+            cheat[0].col = 0;
+            cheat[0].row = 120;
+            cheat[0].active = 1;
+
+            // 2nd jump
+            cheat[1].col = 104;
+            cheat[1].row = 104;
+            cheat[1].active = 1;
+
+            // 3rd jump
+            cheat[2].col = 56;
+            cheat[2].row = 80;
+            cheat[2].active = 1;
+
+            // 4th jump
+            cheat[3].col = 104;
+            cheat[3].row = 64;
+            cheat[3].active = 1;
+
+            // 5th jump
+            cheat[4].col = 56;
+            cheat[4].row = 40;
+            cheat[4].active = 1;
+
+            // 6th jump
+            cheat[5].col = 224;
+            cheat[5].row = 96;
+            cheat[5].active = 1;
+            break;
+        case 2:
+            // 1st jump
+            cheat[0].col = 48;
+            cheat[0].row = 88;
+            cheat[0].active = 1;
+
+            // 2nd jump
+            cheat[1].col = 128;
+            cheat[1].row = 112;
+            cheat[1].active = 1;
+
+            // 3rd jump
+            cheat[2].col = 88;
+            cheat[2].row = 104;
+            cheat[2].active = 1;
+
+            // 4th jump
+            cheat[3].col = 128;
+            cheat[3].row = 72;
+            cheat[3].active = 1;
+
+            // 5th jump
+            cheat[4].active = 0;
+
+            // 6th jump
+            cheat[5].active = 0;
+            break;
+        case 3:
+            // 1st jump
+            cheat[0].col = 64;
+            cheat[0].row = 112;
+            cheat[0].active = 1;
+
+            // 2nd jump
+            cheat[1].col = 32;
+            cheat[1].row = 104;
+            cheat[1].active = 1;
+
+            // 3rd jump
+            cheat[2].col = 112;
+            cheat[2].row = 72;
+            cheat[2].active = 1;
+
+            // 4th jump
+            cheat[3].col = 0;
+            cheat[3].row = 32;
+            cheat[3].active = 1;
+
+            // 5th jump
+            cheat[4].col = 120;
+            cheat[4].row = 128;
+            cheat[4].active = 1;
+
+            cheat[5].active = 0;
+            break;
+    }
+}
+
+void updateCheat() {
+    for (int i = 0; i < 10; i++) {
+        if (cheat[i].active && player.isCheating2) {
+            shadowOAM[4 + i].attr0 = cheat[i].row | ATTR0_TALL;
+            shadowOAM[4 + i].attr1 = cheat[i].col | ATTR1_TINY;
+            shadowOAM[4 + i].attr2 = ATTR2_TILEID(21 + (player.level - 1), i * 2) | ATTR2_PALROW(player.level + 2);
+        } else {
+            shadowOAM[4 + i].attr0 = ATTR0_HIDE;
+        }
+        
     }
 }

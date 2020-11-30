@@ -795,6 +795,9 @@ game:
 	ldr	r3, .L100+44
 	mov	lr, pc
 	bx	r3
+	ldr	r3, .L100+48
+	mov	lr, pc
+	bx	r3
 .L94:
 	ldr	r3, [r4, #36]
 	b	.L82
@@ -810,7 +813,7 @@ game:
 	pop	{r4, r5, r6, lr}
 	bx	lr
 .L95:
-	ldr	r2, [r4, #52]
+	ldr	r2, [r4, #56]
 	cmp	r2, #0
 	bne	.L86
 	bl	goToLose
@@ -843,6 +846,7 @@ game:
 	.word	initPlayer
 	.word	buttons
 	.word	initRecordPlayer
+	.word	initCheat
 	.size	game, .-game
 	.section	.text.startup,"ax",%progbits
 	.align	2
@@ -931,7 +935,7 @@ lose:
 	.comm	vOff,2,2
 	.comm	hOff,2,2
 	.comm	curLevel,4,4
-	.comm	player,80,4
+	.comm	player,84,4
 	.comm	shadowOAM,1024,4
 	.comm	oldButtons,2,2
 	.comm	buttons,2,2

@@ -2,6 +2,7 @@
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 1 "main.c"
+# 22 "main.c"
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdlib.h" 1 3
 # 10 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdlib.h" 3
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/machine/ieeefp.h" 1 3
@@ -810,7 +811,7 @@ extern long double _strtold_r (struct _reent *, const char *restrict, char **res
 extern long double strtold (const char *restrict, char **restrict);
 # 336 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdlib.h" 3
 
-# 2 "main.c" 2
+# 23 "main.c" 2
 # 1 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 36 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
 # 1 "/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/9.1.0/include/stddef.h" 1 3 4
@@ -1221,7 +1222,7 @@ _putchar_unlocked(int _c)
 }
 # 797 "/opt/devkitpro/devkitARM/arm-none-eabi/include/stdio.h" 3
 
-# 3 "main.c" 2
+# 24 "main.c" 2
 
 # 1 "myLib.h" 1
 
@@ -1335,7 +1336,7 @@ int inDeadZone(int col, int row, int width, int height,
 
 int checkWinDie(int col, int row, int width, int height,
                 const unsigned short *colBitMap);
-# 5 "main.c" 2
+# 26 "main.c" 2
 # 1 "game.h" 1
 
 typedef struct {
@@ -1356,6 +1357,7 @@ typedef struct {
     int spawnCol;
     int spawnRow;
     int isCheating;
+    int isFlying;
     int lives;
 
 
@@ -1388,8 +1390,16 @@ typedef struct {
     int OAMIndex;
 } LIVESDISP;
 
+typedef struct {
+    int col;
+    int row;
+    int active;
+    int OAMIndex;
+} CHEAT;
+
+
 enum {L1COL = 12, L1ROW = 24, L2COL = 120, L2ROW = 80, L3COL = 120, L3ROW = 80};
-# 62 "game.h"
+# 71 "game.h"
 enum {LEFT, RIGHT, ONGROUND};
 enum {IDLE, RUNNING, ONWALL, JUMPING, FALLING, DYING, CHEATING};
 
@@ -1415,7 +1425,10 @@ void updateRecordPlayer();
 
 void initLivesDisplay();
 void updateLivesDisplay();
-# 6 "main.c" 2
+
+void initCheat();
+void updateCheat();
+# 27 "main.c" 2
 # 1 "sound.h" 1
 
 void setupSounds();
@@ -1442,7 +1455,7 @@ typedef struct{
 
 SOUND soundSong;
 SOUND soundEffect;
-# 7 "main.c" 2
+# 28 "main.c" 2
 
 # 1 "splashScreen.h" 1
 # 21 "splashScreen.h"
@@ -1450,7 +1463,7 @@ extern const unsigned short splashScreenBitmap[19200];
 
 
 extern const unsigned short splashScreenPal[256];
-# 9 "main.c" 2
+# 30 "main.c" 2
 # 1 "instructionsScreen.h" 1
 # 22 "instructionsScreen.h"
 extern const unsigned short instructionsScreenTiles[2464];
@@ -1460,7 +1473,7 @@ extern const unsigned short instructionsScreenMap[1024];
 
 
 extern const unsigned short instructionsScreenPal[256];
-# 10 "main.c" 2
+# 31 "main.c" 2
 # 1 "gameScreen.h" 1
 # 22 "gameScreen.h"
 extern const unsigned short gameScreenTiles[272];
@@ -1470,7 +1483,7 @@ extern const unsigned short gameScreenMap[1024];
 
 
 extern const unsigned short gameScreenPal[256];
-# 11 "main.c" 2
+# 32 "main.c" 2
 # 1 "gameScreenDemo.h" 1
 # 22 "gameScreenDemo.h"
 extern const unsigned short gameScreenDemoTiles[48];
@@ -1480,7 +1493,7 @@ extern const unsigned short gameScreenDemoMap[1024];
 
 
 extern const unsigned short gameScreenDemoPal[256];
-# 12 "main.c" 2
+# 33 "main.c" 2
 # 1 "level1.h" 1
 # 22 "level1.h"
 extern const unsigned short level1Tiles[1152];
@@ -1490,7 +1503,7 @@ extern const unsigned short level1Map[1024];
 
 
 extern const unsigned short level1Pal[256];
-# 13 "main.c" 2
+# 34 "main.c" 2
 # 1 "level2.h" 1
 # 22 "level2.h"
 extern const unsigned short level2Tiles[992];
@@ -1500,7 +1513,7 @@ extern const unsigned short level2Map[1024];
 
 
 extern const unsigned short level2Pal[256];
-# 14 "main.c" 2
+# 35 "main.c" 2
 # 1 "level2Back.h" 1
 # 22 "level2Back.h"
 extern const unsigned short level2BackTiles[2512];
@@ -1510,7 +1523,7 @@ extern const unsigned short level2BackMap[4096];
 
 
 extern const unsigned short level2BackPal[256];
-# 15 "main.c" 2
+# 36 "main.c" 2
 # 1 "level3.h" 1
 # 22 "level3.h"
 extern const unsigned short level3Tiles[1760];
@@ -1520,7 +1533,7 @@ extern const unsigned short level3Map[1024];
 
 
 extern const unsigned short level3Pal[256];
-# 16 "main.c" 2
+# 37 "main.c" 2
 # 1 "level3Back.h" 1
 # 22 "level3Back.h"
 extern const unsigned short level3BackTiles[6848];
@@ -1530,28 +1543,28 @@ extern const unsigned short level3BackMap[2048];
 
 
 extern const unsigned short level3BackPal[256];
-# 17 "main.c" 2
+# 38 "main.c" 2
 # 1 "pauseScreen.h" 1
 # 21 "pauseScreen.h"
 extern const unsigned short pauseScreenBitmap[19200];
 
 
 extern const unsigned short pauseScreenPal[256];
-# 18 "main.c" 2
+# 39 "main.c" 2
 # 1 "winScreen.h" 1
 # 21 "winScreen.h"
 extern const unsigned short winScreenBitmap[19200];
 
 
 extern const unsigned short winScreenPal[256];
-# 19 "main.c" 2
+# 40 "main.c" 2
 # 1 "loseScreen.h" 1
 # 21 "loseScreen.h"
 extern const unsigned short loseScreenBitmap[19200];
 
 
 extern const unsigned short loseScreenPal[256];
-# 20 "main.c" 2
+# 41 "main.c" 2
 
 
 # 1 "splashSong.h" 1
@@ -1560,42 +1573,42 @@ extern const unsigned short loseScreenPal[256];
 extern const unsigned int splashSong_sampleRate;
 extern const unsigned int splashSong_length;
 extern const signed char splashSong_data[];
-# 23 "main.c" 2
+# 44 "main.c" 2
 # 1 "level1Song.h" 1
 
 
 extern const unsigned int level1Song_sampleRate;
 extern const unsigned int level1Song_length;
 extern const signed char level1Song_data[];
-# 24 "main.c" 2
+# 45 "main.c" 2
 # 1 "level2Song.h" 1
 
 
 extern const unsigned int level2Song_sampleRate;
 extern const unsigned int level2Song_length;
 extern const signed char level2Song_data[];
-# 25 "main.c" 2
+# 46 "main.c" 2
 # 1 "level3Song.h" 1
 
 
 extern const unsigned int level3Song_sampleRate;
 extern const unsigned int level3Song_length;
 extern const signed char level3Song_data[];
-# 26 "main.c" 2
+# 47 "main.c" 2
 # 1 "winSong.h" 1
 
 
 extern const unsigned int winSong_sampleRate;
 extern const unsigned int winSong_length;
 extern const signed char winSong_data[];
-# 27 "main.c" 2
+# 48 "main.c" 2
 # 1 "loseSong.h" 1
 
 
 extern const unsigned int loseSong_sampleRate;
 extern const unsigned int loseSong_length;
 extern const signed char loseSong_data[];
-# 28 "main.c" 2
+# 49 "main.c" 2
 
 
 
@@ -1830,6 +1843,7 @@ void game() {
         player.level++;
         initPlayer();
         initRecordPlayer();
+        initCheat();
     }
 
     if (player.level == 1 && player.lives == 0) {

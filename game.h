@@ -17,6 +17,7 @@ typedef struct {
     int spawnCol;
     int spawnRow;
     int isCheating;
+    int isCheating2;
     int lives;
 
     // sprite variables
@@ -48,6 +49,14 @@ typedef struct {
     int height;
     int OAMIndex;
 } LIVESDISP;
+
+typedef struct {
+    int col;
+    int row;
+    int active;
+    int OAMIndex;
+} CHEAT;
+
 
 enum {L1COL = 12, L1ROW = 24, L2COL = 120, L2ROW = 80, L3COL = 120, L3ROW = 80};
 
@@ -84,3 +93,6 @@ void updateRecordPlayer();
 
 void initLivesDisplay();
 void updateLivesDisplay();
+
+void initCheat();
+void updateCheat();
