@@ -362,7 +362,7 @@ void updatePlayer() {
     if (BUTTON_PRESSED(BUTTON_SELECT)) {
         if (player.isCheating) {
             player.isCheating = 0;
-        } else {
+        } else if (player.aniState != DYING) {
             player.isCheating = 1;
         }
     }

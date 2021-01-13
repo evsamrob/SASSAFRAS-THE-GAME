@@ -1357,7 +1357,7 @@ typedef struct {
     int spawnCol;
     int spawnRow;
     int isCheating;
-    int isFlying;
+    int isCheating2;
     int lives;
 
 

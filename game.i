@@ -1855,7 +1855,7 @@ void updatePlayer() {
     if ((!(~(oldButtons) & ((1 << 2))) && (~buttons & ((1 << 2))))) {
         if (player.isCheating) {
             player.isCheating = 0;
-        } else {
+        } else if (player.aniState != DYING) {
             player.isCheating = 1;
         }
     }
